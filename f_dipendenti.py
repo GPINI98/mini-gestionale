@@ -1,4 +1,4 @@
-# DEFINIZIONE FUNZIONI 
+# DIPENDENTI 
 # ################# MOSTRA DIPENDENTI
 def mostra_dipendenti(dipendenti):
     for dipendente in dipendenti:
@@ -29,11 +29,9 @@ def aggiungi_dipendente(dipendenti, nome, eta, stipendio):
     dipendenti.append(nuovo_dipendente)
 
 # ################# ELIMINA DIPENDENTE
-def elimina_dipendente(dipendenti):
-    nome_richiesto = input("che nome devo cercare?")
-    risultato = cerca_dipendente(dipendenti, nome_richiesto) 
-    if risultato is None:
-        print("dipendente non trovato")
-    else :
-        dipendenti.remove(risultato)
-    print(f"{nome_richiesto} è stato eliminato")
+def elimina_dipendente(dipendenti, nome):
+    dipendente = cerca_dipendente(dipendenti, nome) 
+    if dipendente is None:
+        return False
+    dipendenti.remove(dipendente)
+    return True
