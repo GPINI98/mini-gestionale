@@ -10,14 +10,15 @@ dipendenti = [
     
 scelta = 0
 
-while scelta != 6:
+while scelta != 7:
 
     print("1. Mostra dipendenti")
     print("2. Cerca dipendente")
     print("3. Trova stipendio massimo")
     print("4. Aggiungi dipendente")
     print("5. Elimina dipendente")
-    print("6. Esci")
+    print("6. Modifica dipendente")
+    print("7. Esci")
 
     scelta = int(input("Scegli un'opzione: "))
 
@@ -45,4 +46,13 @@ while scelta != 6:
             print(f"{nome} è stato eliminato")    
         else:
             print("dipendente non rilevato")    
+    elif scelta == 6 :
+        nome = input("che nome devo cercare?")
+        nuova_eta = int(input("Inserisci l'età: "))
+        nuovo_stipendio = int(input("Inserisci lo stipendio: "))  
+        risultato = f_dipendenti.modifica_dipendente(dipendenti, nome, nuova_eta, nuovo_stipendio)
+        if risultato:
+            print(f"dipendente {nome} modificato con successo")
+        else:
+            print("dipendente non trovato")
         

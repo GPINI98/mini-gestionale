@@ -35,3 +35,23 @@ def elimina_dipendente(dipendenti, nome):
         return False
     dipendenti.remove(dipendente)
     return True
+
+# ################# MODIFICA DIPENDENTE
+# cercare il dipendente tramite il nome;
+# se non esiste → restituire False;
+# se esiste → modificare età e stipendio;
+# restituire True.
+
+def modifica_dipendente(dipendenti, nome, nuova_eta, nuovo_stipendio):
+    dipendente_modifica = cerca_dipendente(dipendenti, nome)
+    # dipendente_modifica = {
+    #     "eta" : nuova_eta,
+    #     "stipendio" : nuovo_stipendio
+    # }
+    if dipendente_modifica is None:
+        return False
+    dipendente_modifica['eta'] = nuova_eta
+    dipendente_modifica['stipendio'] = nuovo_stipendio
+    return True
+    
+# dipendenti.edit(dipendente_modifica)
