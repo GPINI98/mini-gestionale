@@ -46,13 +46,5 @@ while scelta != 7:
             print(f"{nome} è stato eliminato")    
         else:
             print("dipendente non rilevato")    
-    elif scelta == 6 :
-        nome = input("che nome devo cercare?")
-        nuova_eta = int(input("Inserisci l'età: "))
-        nuovo_stipendio = int(input("Inserisci lo stipendio: "))  
-        risultato = f_dipendenti.modifica_dipendente(dipendenti, nome, nuova_eta, nuovo_stipendio)
-        if risultato:
-            print(f"dipendente {nome} modificato con successo")
-        else:
-            print("dipendente non trovato")
-        
+
+    
