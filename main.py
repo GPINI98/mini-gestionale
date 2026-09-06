@@ -19,8 +19,16 @@ while scelta != 7:
     print("5. Elimina dipendente")
     print("6. Modifica dipendente")
     print("7. Esci")
-
-    scelta = int(input("Scegli un'opzione: "))
+    
+    while True:
+        try:
+            scelta = int(input("Scegli un'opzione: "))
+            if scelta < 1 or scelta > 7 :
+                print("Scelta non valida, devi inserire un numero tra 1 e 7. Riprova.")
+            else:
+                break
+        except ValueError:
+            print("Devi inserire un numero valido.")
 
     if scelta == 1 :
         f_dipendenti.mostra_dipendenti(dipendenti)
@@ -35,16 +43,73 @@ while scelta != 7:
         max_stip = f_dipendenti.trova_massimo(dipendenti)
         print(max_stip)
     elif scelta == 4 :
-        nome = input("Inserisci il nome: ")
-        eta = int(input("Inserisci l'età: "))
-        stipendio = int(input("Inserisci lo stipendio: "))        
+        while True:
+            nome = input("Inserisci il nome: ")
+            if nome == "" or nome.isspace():
+                print("Il nome non può essere vuoto. Riprova.")
+            elif f_dipendenti.cerca_dipendente(dipendenti, nome) is not None:
+                print("Il nome inserito è già presente. Riprova.")
+            else:
+                break
+        while True: 
+            try:
+                eta = int(input("Inserisci l'età: "))
+                if eta <= 0:
+                    print("L'età deve essere un numero positivo. Riprova.")
+                else:
+                    break
+            except ValueError:
+                print("Devi inserire un numero valido per l'età.")
+        while True:
+            try:
+                stipendio = int(input("Inserisci lo stipendio: "))
+                if stipendio <= 0:
+                    print("Lo stipendio deve essere un numero positivo. Riprova.")
+                else:
+                    break
+            except ValueError:
+                print("Devi inserire un numero valido per lo stipendio.")
         f_dipendenti.aggiungi_dipendente(dipendenti, nome, eta, stipendio)
+        print(f"dipendente {nome} aggiunto con successo")
     elif scelta == 5 :
-        nome = input("che nome devo cercare?")
+        while True:
+            nome = input("che nome devo cercare?")
+            if nome == "" or nome.isspace():
+                print("Il nome non può essere vuoto. Riprova.")
+            else:
+                break
         risultato = f_dipendenti.elimina_dipendente(dipendenti, nome)
         if risultato is True:
             print(f"{nome} è stato eliminato")    
         else:
             print("dipendente non rilevato")    
+    elif scelta == 6 :
+            while True:
+                nome = input("Inserisci il nome: ")
+                if nome == "" or nome.isspace():
+                    print("Il nome non può essere vuoto. Riprova.")
+                elif f_dipendenti.cerca_dipendente(dipendenti, nome) is None:
+                    print("Il nome inserito non è presente. Riprova.")
+                else:
+                    break
+            while True: 
+                try:
+                    nuova_eta = int(input("Inserisci l'età: "))
+                    if nuova_eta <= 0:
+                        print("L'età deve essere un numero positivo. Riprova.")
+                    else:
+                        break
+                except ValueError:
+                    print("Devi inserire un numero valido per l'età.")
+            while True:
+                try:
+                    nuovo_stipendio = int(input("Inserisci lo stipendio: "))
+                    if nuovo_stipendio <= 0:
+                        print("Lo stipendio deve essere un numero positivo. Riprova.")
+                    else:
+                        break
+                except ValueError:
+                    print("Devi inserire un numero valido per lo stipendio.")
+            f_dipendenti.modifica_dipendente(dipendenti, nome, nuova_eta, nuovo_stipendio)
+            print(f"dipendente {nome} modificato con successo")
 
-    
