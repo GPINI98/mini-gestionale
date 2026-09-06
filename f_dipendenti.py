@@ -1,3 +1,5 @@
+import json
+
 # DIPENDENTI 
 # ################# MOSTRA DIPENDENTI
 def mostra_dipendenti(dipendenti):
@@ -16,7 +18,7 @@ def cerca_dipendente(dipendenti, nome):
 def trova_massimo(dipendenti):
     dipendente_max = None
     for dipendente in dipendenti:
-        if dipendente_max is None or dipendente_max ['stipendio'] < dipendente ['stipendio']:
+        if dipendente_max is None or dipendente_max['stipendio'] < dipendente ['stipendio']:
             dipendente_max = dipendente
     return dipendente_max
 
@@ -46,3 +48,23 @@ def modifica_dipendente(dipendenti, nome, nuova_eta, nuovo_stipendio):
     dipendente_modifica['stipendio'] = nuovo_stipendio
     return True
     
+# ################# SALVA DIPENDENTI
+def salva_dipendenti(dipendenti):
+    with open("dipendenti.json", "w") as file:
+        json.dump(dipendenti, file, indent=4)
+
+# ################# CONTROLLO JSON
+
+def controllo_json():
+    try:
+        with open("dipendenti.json", "r") as file:
+            dipendenti = json.load(file)
+    except FileNotFoundError:
+        print("Il file dipendenti.json non è stato trovato. Creazione di un nuovo file.")
+        dipendenti = []
+        salva_dipendenti(dipendenti)
+    except json.JSONDecodeError:
+        print("Errore nel decodificare il file JSON. Creazione di un nuovo file.")
+        dipendenti = []
+        salva_dipendenti(dipendenti)
+    return dipendenti

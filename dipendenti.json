@@ -1,0 +1,17 @@
+[
+    {
+        "nome": "Marco",
+        "eta": 32,
+        "stipendio": 2200
+    },
+    {
+        "nome": "Luca",
+        "eta": 25,
+        "stipendio": 1800
+    },
+    {
+        "nome": "Paolo",
+        "eta": 29,
+        "stipendio": 1950
+    }
+]

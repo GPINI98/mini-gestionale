@@ -2,13 +2,8 @@
 import f_dipendenti
 import validazione
 
-dipendenti = [
-    {"nome": "Marco", "eta": 32, "stipendio": 2200},
-    {"nome": "Luca", "eta": 25, "stipendio": 1800},
-    {"nome": "Anna", "eta": 41, "stipendio": 2500},
-    {"nome": "Paolo", "eta": 29, "stipendio": 1950}
-]
-    
+dipendenti = f_dipendenti.controllo_json()
+
 scelta = 0
 
 while scelta != 7:
@@ -40,11 +35,13 @@ while scelta != 7:
         eta = validazione.validazione_eta()
         stipendio = validazione.validazione_stipendio()
         f_dipendenti.aggiungi_dipendente(dipendenti, nome, eta, stipendio)
+        f_dipendenti.salva_dipendenti(dipendenti)
         print(f"dipendente {nome} aggiunto con successo")
     elif scelta == 5 :
         nome = validazione.validazione_nome()
         risultato = f_dipendenti.elimina_dipendente(dipendenti, nome)
-        if risultato is True:
+        if risultato:
+            f_dipendenti.salva_dipendenti(dipendenti)
             print(f"{nome} è stato eliminato")    
         else:
             print("dipendente non rilevato")    
@@ -59,4 +56,5 @@ while scelta != 7:
         nuovo_stipendio = validazione.validazione_stipendio()
         f_dipendenti.modifica_dipendente(dipendenti, nome, nuova_eta, nuovo_stipendio)
         print(f"dipendente {nome} modificato con successo")
+        f_dipendenti.salva_dipendenti(dipendenti)
 
