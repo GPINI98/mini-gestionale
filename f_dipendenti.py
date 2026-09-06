@@ -11,6 +11,7 @@ def cerca_dipendente(dipendenti, nome):
             return dipendente
     return None
 
+
 # ################# MOSTRA MASSIMO STIPENDIO
 def trova_massimo(dipendenti):
     dipendente_max = None
