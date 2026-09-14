@@ -13,5 +13,10 @@
         "nome": "Paolo",
         "eta": 29,
         "stipendio": 1950
+    },
+    {
+        "nome": "Giuseppe",
+        "eta": 27,
+        "stipendio": 1800
     }
 ]

@@ -22,6 +22,13 @@ def trova_massimo(dipendenti):
             dipendente_max = dipendente
     return dipendente_max
 
+# ################# MOSTRA STIPENDIO MEDIO
+def calcola_stipendio_medio(dipendenti):
+    somma_stipendi = 0
+    for dipendente in dipendenti:
+        somma_stipendi += dipendente['stipendio']
+    return somma_stipendi / len(dipendenti) if dipendenti else 0
+
 # ################# AGGIUNGI DIPENDENTE
 def aggiungi_dipendente(dipendenti, nome, eta, stipendio):
     nuovo_dipendente = {

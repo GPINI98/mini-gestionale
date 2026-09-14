@@ -39,8 +39,8 @@ def validazione_scelta():
     while True:
         try:
             scelta = int(input("Scegli un'opzione: "))
-            if scelta < 1 or scelta > 7 :
-                print("Scelta non valida, devi inserire un numero tra 1 e 7. Riprova.")
+            if scelta < 1 or scelta > 8 :
+                print("Scelta non valida, devi inserire un numero tra 1 e 8. Riprova.")
             else:
                 break
         except ValueError:

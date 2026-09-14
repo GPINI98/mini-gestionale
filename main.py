@@ -6,7 +6,7 @@ dipendenti = f_dipendenti.controllo_json()
 
 scelta = 0
 
-while scelta != 7:
+while scelta != 8:
 
     print("1. Mostra dipendenti")
     print("2. Cerca dipendente")
@@ -14,7 +14,9 @@ while scelta != 7:
     print("4. Aggiungi dipendente")
     print("5. Elimina dipendente")
     print("6. Modifica dipendente")
-    print("7. Esci")
+    print("7. Mostra stipendio medio")
+    print("8. Esci")
+
     
     scelta = validazione.validazione_scelta()
 
@@ -57,4 +59,6 @@ while scelta != 7:
         f_dipendenti.modifica_dipendente(dipendenti, nome, nuova_eta, nuovo_stipendio)
         print(f"dipendente {nome} modificato con successo")
         f_dipendenti.salva_dipendenti(dipendenti)
-
+    elif scelta == 7 :
+        media_stipendi = f_dipendenti.calcola_stipendio_medio(dipendenti)
+        print(f"Lo stipendio medio dei dipendenti è: {media_stipendi:.2f}")
