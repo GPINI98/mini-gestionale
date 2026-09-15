@@ -11,65 +11,45 @@ cursor.execute('''
     )
 ''')
 
+# INSERISCI DIPENDENTE NEL DATABASE
 def inserisci_dipendente(nome, eta, stipendio):
     cursor.execute(
         "INSERT INTO dipendenti (nome, eta, stipendio) VALUES (?, ?, ?)",
         (nome, eta, stipendio)
     )
     connessione.commit()
-    if cursor.rowcount == 0:
-        print("Errore nell'inserimento del dipendente.")
-    else:
-        print("Dipendente inserito con successo!")
 
-# nome = input("Nome: ")
-# eta = int(input("Età: "))
-# stipendio = float(input("Stipendio: "))
+# CERCA DIPENDENTE NEL DATABASE
+def cerca_dipendente(nome):
+    cursor.execute(
+        "SELECT * FROM dipendenti WHERE nome = ?",
+        (nome,)
+    )
+    risultato = cursor.fetchone()
+    return risultato
 
-# # INSERISCI DIPENDENTE NEL DATABASE
-# cursor.execute(
-#     "INSERT INTO dipendenti (nome, eta, stipendio) VALUES (?, ?, ?)",
-#     (nome, eta, stipendio)
-# )
-# if cursor.rowcount == 0:
-#     print("Errore nell'inserimento del dipendente.")
-# else:
-#     print("Dipendente inserito con successo!")
-connessione.commit()
+# CERCA DIPENDENTE ID NEL DATABASE
+def cerca_dipendente_id(id_dipendente):
+    cursor.execute(
+        "SELECT * FROM dipendenti WHERE id = ?",
+        (id_dipendente,)
+    )
+    risultato = cursor.fetchone()
+    return risultato
 
 # MOSTRA DIPENDENTI NEL DATABASE
 def mostra_dipendenti():
     cursor.execute("SELECT * FROM dipendenti ORDER BY stipendio DESC")
     risultati = cursor.fetchall()
-    for dipendente in risultati:
-        print(dipendente)
-# cursor.execute("SELECT * FROM dipendenti ORDER BY stipendio DESC")
-# risultati = cursor.fetchall()
-# for dipendente in risultati:
-#     print(dipendente)
+    return risultati
 
 # MODIFICA DIPENDENTE NEL DATABASE
-def modifica_dipendente(id_dipendente, nuovo_stipendio):
+def modifica_dipendente(id_dipendente, nuovo_nome, nuova_eta, nuovo_stipendio):
     cursor.execute(
-        "UPDATE dipendenti SET stipendio = ? WHERE id = ?",
-        (nuovo_stipendio, id_dipendente)
+        "UPDATE dipendenti SET nome = ?, eta = ?, stipendio = ? WHERE id = ?",
+        (nuovo_nome, nuova_eta, nuovo_stipendio, id_dipendente)
     )
-    if cursor.rowcount == 0:
-        print("Nessun dipendente trovato con l'ID specificato.")
-    else:
-        print("Dipendente modificato con successo!")
     connessione.commit()
-# id_dipendente = int(input("ID del dipendente da modificare: "))
-# nuovo_stipendio = float(input("Nuovo stipendio: "))
-# cursor.execute(
-#     "UPDATE dipendenti SET stipendio = ? WHERE id = ?",
-#     (nuovo_stipendio, id_dipendente)
-# )
-# if cursor.rowcount == 0:
-#     print("Nessun dipendente trovato con l'ID specificato.")
-# else:
-#     print("Dipendente modificato con successo!")
-connessione.commit()
 
 # ELIMINA DIPENDENTE DAL DATABASE
 def elimina_dipendente(id_dipendente):
@@ -77,20 +57,19 @@ def elimina_dipendente(id_dipendente):
         "DELETE FROM dipendenti WHERE id = ?",
         (id_dipendente,)
     )
-    if cursor.rowcount == 0:
-        print("Nessun dipendente trovato con l'ID specificato.")
-    else:
-        print("Dipendente eliminato con successo!")
     connessione.commit()
-# id_dipendente = int(input("ID del dipendente da eliminare: "))
-# cursor.execute(
-#     "DELETE FROM dipendenti WHERE id = ?",
-#     (id_dipendente,)
-# )
-# if cursor.rowcount == 0:
-#     print("Nessun dipendente trovato con l'ID specificato.")
-# else:
-#     print("Dipendente eliminato con successo!")
-connessione.commit()
+    if cursor.rowcount == 0:
+        return False
+    return True
 
-connessione.close()
+# TROVA STIPENDIO MASSIMO NEL DATABASE
+def trova_massimo():
+    cursor.execute("SELECT * FROM dipendenti WHERE stipendio = (SELECT MAX(stipendio) FROM dipendenti)")
+    risultato = cursor.fetchone()
+    return risultato
+
+# TROVA STIPENDIO MEDIO NEL DATABASE
+def trova_stipendio_medio():
+    cursor.execute("SELECT AVG(stipendio) FROM dipendenti")
+    risultato = cursor.fetchone()
+    return risultato[0]

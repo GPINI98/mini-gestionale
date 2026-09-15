@@ -9,6 +9,19 @@ def validazione_nome():
             break
     return nome
 
+# FUNZIONE DI VALIDAZIONE ID
+def validazione_id():
+    while True:
+        try:
+            id_dipendente = int(input("Inserisci l'ID del dipendente: "))
+            if id_dipendente <= 0:
+                print("L'ID deve essere un numero positivo. Riprova.")
+            else:
+                break
+        except ValueError:
+            print("Devi inserire un numero valido per l'ID.")
+    return id_dipendente
+
 # FUNZIONE DI VALIDAZIONE ETA'
 def validazione_eta():
     while True:
