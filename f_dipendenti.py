@@ -75,3 +75,28 @@ def controllo_json():
         dipendenti = []
         salva_dipendenti(dipendenti)
     return dipendenti
+
+# ############## ANALIZZA DIPENDENTI
+def analizza_dipendenti(dipendenti):
+    if not dipendenti:
+        return {
+            "numero_dipendenti": 0,
+            "stipendio_minimo": 0,
+            "stipendio_massimo": 0,
+            "stipendio_medio": 0,
+            "sopra_media": []
+        }
+    numero_dipendenti = len(dipendenti)
+    stipendio_minimo = min(dipendente['stipendio'] for dipendente in dipendenti)
+    stipendio_massimo = max(dipendente['stipendio'] for dipendente in dipendenti)
+    stipendio_medio = calcola_stipendio_medio(dipendenti)
+    sopra_media = [dipendente for dipendente in dipendenti if dipendente['stipendio'] > stipendio_medio]
+    
+    risultato = {
+        "numero_dipendenti": numero_dipendenti,
+        "stipendio_minimo": stipendio_minimo,
+        "stipendio_massimo": stipendio_massimo,
+        "stipendio_medio": stipendio_medio,
+        "sopra_media": sopra_media
+    }
+    return risultato
