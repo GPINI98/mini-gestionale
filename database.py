@@ -1,8 +1,10 @@
 # DATABASE
 import sqlite3
 
+PERCORSO_DATABASE = "dipendenti.db"
+
 def inizializzazione_database():
-    with sqlite3.connect("dipendenti.db") as connessione:
+    with sqlite3.connect(PERCORSO_DATABASE) as connessione:
         cursor = connessione.cursor()
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS dipendenti (
@@ -15,17 +17,20 @@ def inizializzazione_database():
 
 # INSERISCI DIPENDENTE NEL DATABASE
 def inserisci_dipendente(nome, eta, stipendio):
-    with sqlite3.connect("dipendenti.db") as connessione:
+    with sqlite3.connect(PERCORSO_DATABASE) as connessione:
         cursor = connessione.cursor()
         cursor.execute(
             "INSERT INTO dipendenti (nome, eta, stipendio) VALUES (?, ?, ?)",
             (nome, eta, stipendio)
         )
         connessione.commit()
+        id_dipendente = cursor.lastrowid
+        return id_dipendente
+
 
 # CERCA DIPENDENTE NEL DATABASE
 def cerca_dipendente(nome):
-    with sqlite3.connect("dipendenti.db") as connessione:
+    with sqlite3.connect(PERCORSO_DATABASE) as connessione:
         cursor = connessione.cursor()
         cursor.execute(
             "SELECT * FROM dipendenti WHERE nome = ?",
@@ -36,7 +41,7 @@ def cerca_dipendente(nome):
 
 # CERCA DIPENDENTE ID NEL DATABASE
 def cerca_dipendente_id(id_dipendente):
-    with sqlite3.connect("dipendenti.db") as connessione:
+    with sqlite3.connect(PERCORSO_DATABASE) as connessione:
         cursor = connessione.cursor()
         cursor.execute(
             "SELECT * FROM dipendenti WHERE id = ?",
@@ -47,7 +52,7 @@ def cerca_dipendente_id(id_dipendente):
 
 # MOSTRA DIPENDENTI NEL DATABASE
 def mostra_dipendenti():
-    with sqlite3.connect("dipendenti.db") as connessione:
+    with sqlite3.connect(PERCORSO_DATABASE) as connessione:
         cursor = connessione.cursor()
         cursor.execute("SELECT * FROM dipendenti ORDER BY stipendio DESC")
         risultati = cursor.fetchall()
@@ -55,7 +60,7 @@ def mostra_dipendenti():
 
 # MODIFICA DIPENDENTE NEL DATABASE
 def modifica_dipendente(id_dipendente, nuovo_nome, nuova_eta, nuovo_stipendio):
-    with sqlite3.connect("dipendenti.db") as connessione:
+    with sqlite3.connect(PERCORSO_DATABASE) as connessione:
         cursor = connessione.cursor()
         cursor.execute(
             "UPDATE dipendenti SET nome = ?, eta = ?, stipendio = ? WHERE id = ?",
@@ -65,7 +70,7 @@ def modifica_dipendente(id_dipendente, nuovo_nome, nuova_eta, nuovo_stipendio):
 
 # ELIMINA DIPENDENTE DAL DATABASE
 def elimina_dipendente(id_dipendente):
-    with sqlite3.connect("dipendenti.db") as connessione:
+    with sqlite3.connect(PERCORSO_DATABASE) as connessione:
         cursor = connessione.cursor()
         cursor.execute(
             "DELETE FROM dipendenti WHERE id = ?",
@@ -78,7 +83,7 @@ def elimina_dipendente(id_dipendente):
 
 # TROVA STIPENDIO MASSIMO NEL DATABASE
 def trova_massimo():
-    with sqlite3.connect("dipendenti.db") as connessione:
+    with sqlite3.connect(PERCORSO_DATABASE) as connessione:
         cursor = connessione.cursor()
         cursor.execute("SELECT * FROM dipendenti WHERE stipendio = (SELECT MAX(stipendio) FROM dipendenti)")
         risultato = cursor.fetchone()
@@ -86,7 +91,7 @@ def trova_massimo():
 
 # TROVA STIPENDIO MEDIO NEL DATABASE
 def trova_stipendio_medio():
-    with sqlite3.connect("dipendenti.db") as connessione:
+    with sqlite3.connect(PERCORSO_DATABASE) as connessione:
         cursor = connessione.cursor()
         cursor.execute("SELECT AVG(stipendio) FROM dipendenti")
         risultato = cursor.fetchone()
