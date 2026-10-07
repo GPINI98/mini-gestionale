@@ -36,7 +36,7 @@ def cerca_dipendente(nome):
             "SELECT * FROM dipendenti WHERE nome = ?",
             (nome,)
         )
-        risultato = cursor.fetchone()
+        risultato = cursor.fetchall()
     return risultato
 
 # CERCA DIPENDENTE ID NEL DATABASE
