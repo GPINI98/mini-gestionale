@@ -33,8 +33,8 @@ def cerca_dipendente(nome):
     with sqlite3.connect(PERCORSO_DATABASE) as connessione:
         cursor = connessione.cursor()
         cursor.execute(
-            "SELECT * FROM dipendenti WHERE nome = ?",
-            (nome,)
+            "SELECT * FROM dipendenti WHERE LOWER(nome) LIKE LOWER(?)",
+            (f"%{nome}%",)
         )
         risultato = cursor.fetchall()
     return risultato

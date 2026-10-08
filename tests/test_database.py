@@ -5,7 +5,6 @@ import validazione
 @pytest.fixture
 def database_test(tmp_path):
     percorso_database = tmp_path / "test.db"
-
     return percorso_database
 
 def test_modifica_dipendente(database_test, monkeypatch):
@@ -17,11 +16,11 @@ def test_modifica_dipendente(database_test, monkeypatch):
 
     risultato = database.cerca_dipendente("Mario")
 
-    assert risultato is not None
-    assert risultato[1] == "Mario"
-    assert risultato[2] == 40
-    assert risultato[3] == 12000
-
+    assert risultato
+    assert risultato[0][1] == "Mario"
+    assert risultato[0][2] == 40
+    assert risultato[0][3] == 12000
+    
 def test_elimina_dipendente(database_test, monkeypatch):
     monkeypatch.setattr(database, "PERCORSO_DATABASE", str(database_test))
 
@@ -31,7 +30,7 @@ def test_elimina_dipendente(database_test, monkeypatch):
 
     risultato = database.cerca_dipendente("Mario")
 
-    assert risultato is None
+    assert risultato == []
 
 def test_elimina_dipendente_non_esistente(database_test, monkeypatch):
     monkeypatch.setattr(database, "PERCORSO_DATABASE", str(database_test))
@@ -62,10 +61,10 @@ def test_inserisci_dipendente(database_test, monkeypatch):
 
     risultato = database.cerca_dipendente("Luigi")
 
-    assert risultato is not None
-    assert risultato[1] == "Luigi"
-    assert risultato[2] == 25
-    assert risultato[3] == 2500
+    assert risultato
+    assert risultato[0][1] == "Luigi"
+    assert risultato[0][2] == 25
+    assert risultato[0][3] == 2500
 
 def test_cerca_dipendente(database_test, monkeypatch):
     monkeypatch.setattr(database, "PERCORSO_DATABASE", str(database_test))
@@ -75,10 +74,10 @@ def test_cerca_dipendente(database_test, monkeypatch):
 
     risultato = database.cerca_dipendente("Anna")
 
-    assert risultato is not None
-    assert risultato[1] == "Anna"
-    assert risultato[2] == 28
-    assert risultato[3] == 2200
+    assert risultato
+    assert risultato[0][1] == "Anna"
+    assert risultato[0][2] == 28
+    assert risultato[0][3] == 2200
 
 def test_cerca_dipendente_id(database_test, monkeypatch):
     monkeypatch.setattr(database, "PERCORSO_DATABASE", str(database_test))
@@ -143,3 +142,14 @@ def test_trova_massimo_database_vuoto(database_test, monkeypatch):
 
     assert risultato is None
 
+def test_cerca_dipendente_parziale(database_test, monkeypatch):
+    monkeypatch.setattr(database, "PERCORSO_DATABASE", str(database_test))
+    
+    database.inizializzazione_database()
+    database.inserisci_dipendente("Mario Rossi", 30, 2500)
+    database.inserisci_dipendente("Mario Bianchi", 35, 2800)
+
+    risultato = database.cerca_dipendente("Mario")
+
+    assert len(risultato) == 2
+    
