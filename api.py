@@ -1,19 +1,33 @@
 from fastapi import FastAPI, HTTPException
 import database
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 
 app = FastAPI()
 
 class Dipendente(BaseModel):
-    nome: str
-    eta: int
-    stipendio: float
+    nome: str = Field(min_length=1)
+    eta: int = Field(gt=0)
+    stipendio: float = Field(gt=0)
+
+    @field_validator("nome")
+    @classmethod
+    def nome_non_vuoto(cls, valore):
+        if not valore.strip():
+            raise ValueError("Il nome non può essere vuoto o contenere solo spazi")
+        return valore
 
 class DipendenteResponse(BaseModel):
     id: int
-    nome: str
-    eta: int
-    stipendio: float
+    nome: str = Field(min_length=1)
+    eta: int = Field(gt=0)
+    stipendio: float = Field(gt=0)
+
+    @field_validator("nome")
+    @classmethod
+    def nome_non_vuoto(cls, valore):
+        if not valore.strip():
+            raise ValueError("Il nome non può essere vuoto o contenere solo spazi")
+        return valore
 
 @app.get("/dipendenti", response_model=list[DipendenteResponse]) 
 def get_dipendenti():

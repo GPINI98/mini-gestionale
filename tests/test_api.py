@@ -90,3 +90,27 @@ def test_cerca_dipendente_non_trovato(dipendenti_test):
     response = client.get("/dipendenti/cerca?nome=NonEsistente")
     
     assert response.status_code == 404
+
+def test_crea_dipendente_eta_negativa():
+    response = client.post("/dipendenti", json={
+        "nome": "Test",
+        "eta": -5,
+        "stipendio": 3000
+    })
+    assert response.status_code == 422
+
+def test_crea_dipendente_stipendio_negativo():
+    response = client.post("/dipendenti", json={
+        "nome": "Test",
+        "eta": 30,
+        "stipendio": -1000
+    })
+    assert response.status_code == 422
+
+def test_crea_dipendente_nome_vuoto_con_spazi():
+    response = client.post("/dipendenti", json={
+        "nome": "  ",
+        "eta": 30,
+        "stipendio": 1000
+    })
+    assert response.status_code == 422
