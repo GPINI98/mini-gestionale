@@ -114,3 +114,18 @@ def test_crea_dipendente_nome_vuoto_con_spazi():
         "stipendio": 1000
     })
     assert response.status_code == 422
+
+def test_trova_stipendio_medio(dipendenti_test):
+    response = client.get("/dipendenti/stipendio_medio")
+    assert response.status_code == 200
+    assert isinstance(response.json(), dict)
+
+    assert "stipendio_medio" in response.json()
+    assert response.json()["stipendio_medio"] == 2350.00
+
+def test_trova_stipendio_medio_senza_dipendenti(database_test):
+    response = client.get("/dipendenti/stipendio_medio")
+    assert response.status_code == 200
+    assert isinstance(response.json(), dict)
+    assert "stipendio_medio" in response.json()
+    assert response.json()["stipendio_medio"] == "dipendenti non presenti"

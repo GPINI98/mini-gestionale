@@ -65,6 +65,12 @@ def cerca_dipendente(nome: str):
         })
     return risultato
 
+@app.get("/dipendenti/stipendio_medio")
+def trova_stipendio_medio():
+    stipendio_medio = database.trova_stipendio_medio()
+    if stipendio_medio is None:
+        return {"stipendio_medio": "dipendenti non presenti"}
+    return {"stipendio_medio": float(f"{stipendio_medio:.2f}")}
 
 @app.get("/dipendenti/{id_dipendente}", response_model=DipendenteResponse) 
 def get_dipendente(id_dipendente: int):
