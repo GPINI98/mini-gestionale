@@ -15,14 +15,18 @@ def mostra_dipendenti():
 def cerca_dipendente():
     nome_richiesto = validazione.validazione_nome()
     risultato = database.cerca_dipendente(nome_richiesto)
-    if risultato is None:
+    if not risultato:
         print("dipendente non trovato")
     else :
-        print(f"ID: {risultato[0]}, Nome: {risultato[1]}, Età: {risultato[2]}, Stipendio: {risultato[3]:.2f} €")
+        for risultata in risultato:
+            print(f"ID: {risultata[0]}, Nome: {risultata[1]}, Età: {risultata[2]}, Stipendio: {risultata[3]:.2f} €")
 
 def mostra_stipendio_massimo():
     max_stip = database.trova_massimo()
-    return max_stip
+    if not max_stip:
+        print("Nessun dipendente trovato")
+    else:
+        print(f"L'utente con lo stipendio più alto è ID: {max_stip[0]}, Nome: {max_stip[1]}, Età: {max_stip[2]}, Stipendio: {max_stip[3]:.2f} €")
 
 def aggiungi_dipendente():
     nome = validazione.validazione_nome()
@@ -54,7 +58,10 @@ def modifica_dipendente():
 
 def trova_stipendio_medio():
     media_stipendi = database.trova_stipendio_medio()
-    print(f"Lo stipendio medio dei dipendenti è: {media_stipendi:.2f}")
+    if media_stipendi is None:
+        print("Nessun dipendente trovato")
+    else:
+        print(f"Lo stipendio medio dei dipendenti è: {media_stipendi:.2f}")
 
 def main():
     scelta = 0
@@ -78,8 +85,7 @@ def main():
         elif scelta == 2 :
             cerca_dipendente()
         elif scelta == 3 :
-            max_stip = mostra_stipendio_massimo()
-            print(f"L'utente con lo stipendio più alto è ID: {max_stip[0]}, Nome: {max_stip[1]}, Età: {max_stip[2]}, Stipendio: {max_stip[3]:.2f} €")
+            mostra_stipendio_massimo()
         elif scelta == 4 :
             aggiungi_dipendente()
         elif scelta == 5 :
