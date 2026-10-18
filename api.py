@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 import database
+import sqlite3
 from pydantic import BaseModel, Field, field_validator
 
 app = FastAPI()
@@ -31,7 +32,13 @@ class DipendenteResponse(BaseModel):
 
 @app.get("/dipendenti", response_model=list[DipendenteResponse]) 
 def get_dipendenti():
-    dipendenti =database.mostra_dipendenti()
+    try:
+        dipendenti =database.mostra_dipendenti()
+    except sqlite3.Error as errore:
+        raise HTTPException(
+            status_code=500,
+            detail="Errore durante il recupero dei dipendenti"
+        ) from errore
     risultato = []
     for dipendente in dipendenti:
         risultato.append({
@@ -44,12 +51,43 @@ def get_dipendenti():
 
 @app.post("/dipendenti", status_code=201, response_model=DipendenteResponse)
 def crea_dipendente(dipendente: Dipendente):
-    id_dipendente = database.inserisci_dipendente(dipendente.nome, dipendente.eta, dipendente.stipendio)
+    try:
+        id_dipendente = database.inserisci_dipendente(
+            dipendente.nome,
+            dipendente.eta,
+            dipendente.stipendio
+        )
+    except sqlite3.Error as errore:
+        raise HTTPException(
+            status_code=500,
+            detail="Errore durante il salvataggio del dipendente"
+        ) from errore
+
     return {"id": id_dipendente, "nome": dipendente.nome, "eta": dipendente.eta, "stipendio": dipendente.stipendio}
+
+@app.get("/dipendenti/stipendio_medio")
+def trova_stipendio_medio():
+    try:
+        stipendio_medio = database.trova_stipendio_medio()
+    except sqlite3.Error as errore:
+        raise HTTPException(
+            status_code=500,
+            detail="Errore durante il calcolo dello stipendio medio"
+        ) from errore
+    if stipendio_medio is None:
+        return {"stipendio_medio": "dipendenti non presenti"}
+    return {"stipendio_medio": float(f"{stipendio_medio:.2f}")}
 
 @app.get("/dipendenti/cerca", response_model=list[DipendenteResponse])
 def cerca_dipendente(nome: str):
-    dipendenti = database.cerca_dipendente(nome)
+    try:
+        dipendenti = database.cerca_dipendente(nome)
+    except sqlite3.Error as errore:
+        raise HTTPException(
+            status_code=500,
+            detail="Errore durante la ricerca del dipendente"
+        ) from errore
+    
     if not dipendenti:
         raise HTTPException(
             status_code=404,
@@ -65,16 +103,15 @@ def cerca_dipendente(nome: str):
         })
     return risultato
 
-@app.get("/dipendenti/stipendio_medio")
-def trova_stipendio_medio():
-    stipendio_medio = database.trova_stipendio_medio()
-    if stipendio_medio is None:
-        return {"stipendio_medio": "dipendenti non presenti"}
-    return {"stipendio_medio": float(f"{stipendio_medio:.2f}")}
-
 @app.get("/dipendenti/{id_dipendente}", response_model=DipendenteResponse) 
 def get_dipendente(id_dipendente: int):
-    dipendente = database.cerca_dipendente_id(id_dipendente)
+    try:
+        dipendente = database.cerca_dipendente_id(id_dipendente)
+    except sqlite3.Error as errore:
+        raise HTTPException(
+            status_code=500,
+            detail="Errore durante la ricerca del dipendente"
+        ) from errore
     if not dipendente:
         raise HTTPException(status_code=404, detail="Dipendente non trovato")
     return {
@@ -86,7 +123,13 @@ def get_dipendente(id_dipendente: int):
 
 @app.delete("/dipendenti/{id_dipendente}", status_code=204)
 def elimina_dipendente(id_dipendente: int):
-    dipendente = database.elimina_dipendente(id_dipendente)
+    try:
+        dipendente = database.elimina_dipendente(id_dipendente)
+    except sqlite3.Error as errore:
+        raise HTTPException(
+            status_code=500,
+            detail="Errore durante l'eliminazione del dipendente"
+        ) from errore
     if not dipendente:
         raise HTTPException(
             status_code=404,
@@ -95,12 +138,28 @@ def elimina_dipendente(id_dipendente: int):
 
 @app.put("/dipendenti/{id_dipendente}")
 def modifica_dipendente(id_dipendente: int, dipendente: Dipendente):
-    dipendente_esistente = database.cerca_dipendente_id(id_dipendente)
+    try:
+        dipendente_esistente = database.cerca_dipendente_id(id_dipendente)
+    except sqlite3.Error as errore:
+        raise HTTPException(
+            status_code=500,
+            detail="Errore durante la ricerca del dipendente"
+        ) from errore    
     if not dipendente_esistente:
         raise HTTPException(
             status_code=404,
             detail="Dipendente non trovato"
         )
-    database.modifica_dipendente(id_dipendente, dipendente.nome, dipendente.eta, dipendente.stipendio)
+    try:
+        dipendente_modificato = database.modifica_dipendente(id_dipendente, dipendente.nome, dipendente.eta, dipendente.stipendio)
+    except sqlite3.Error as errore:
+        raise HTTPException(
+            status_code=500,
+            detail="Errore durante la modifica del dipendente"
+        ) from errore
+    if not dipendente_modificato:
+        raise HTTPException(
+            status_code=404,
+            detail="Dipendente non trovato"
+        )
     return {"id": id_dipendente, "nome": dipendente.nome, "eta": dipendente.eta, "stipendio": dipendente.stipendio}
-

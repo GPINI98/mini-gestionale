@@ -67,6 +67,9 @@ def modifica_dipendente(id_dipendente, nuovo_nome, nuova_eta, nuovo_stipendio):
             (nuovo_nome, nuova_eta, nuovo_stipendio, id_dipendente)
         )
         connessione.commit()
+        if cursor.rowcount == 0:
+            return False
+        return True
 
 # ELIMINA DIPENDENTE DAL DATABASE
 def elimina_dipendente(id_dipendente):

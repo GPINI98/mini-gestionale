@@ -1,5 +1,6 @@
 import pytest
 import api
+import sqlite3
 from fastapi.testclient import TestClient
 
 client = TestClient(api.app)
@@ -129,3 +130,166 @@ def test_trova_stipendio_medio_senza_dipendenti(database_test):
     assert isinstance(response.json(), dict)
     assert "stipendio_medio" in response.json()
     assert response.json()["stipendio_medio"] == "dipendenti non presenti"
+
+def test_crea_dipendente_errore_database(monkeypatch):
+    def inserimento_con_errore(*args):
+        raise sqlite3.OperationalError("Errore simulato")
+
+#  sostituisce temporaneamente la funzione reale di inserimento
+    monkeypatch.setattr(
+        "api.database.inserisci_dipendente",
+        inserimento_con_errore
+    )
+
+    client = TestClient(api.app)
+
+    response = client.post(
+        "/dipendenti",
+        json={"nome": "Mario", "eta": 30, "stipendio": 1800}
+    )
+
+    assert response.status_code == 500
+    assert response.json()["detail"] == "Errore durante il salvataggio del dipendente"
+
+def test_cerca_dipendenti_errore_database(monkeypatch):
+    def mostra_con_errore(*args):
+        raise sqlite3.OperationalError("Errore simulato")
+
+#  sostituisce temporaneamente la funzione reale di ricerca
+    monkeypatch.setattr(
+        "api.database.mostra_dipendenti",
+        mostra_con_errore
+    )
+
+    client = TestClient(api.app)
+
+    response = client.get(
+        "/dipendenti"
+    )
+
+    assert response.status_code == 500
+    assert response.json()["detail"] == "Errore durante il recupero dei dipendenti"
+
+def test_cerca_dipendenti_stipendio_medio_errore_database(monkeypatch):
+    def mostra_stipendio_medio_con_errore(*args):
+        raise sqlite3.OperationalError("Errore simulato")
+
+#  sostituisce temporaneamente la funzione reale di ricerca stipendio medio
+    monkeypatch.setattr(
+        "api.database.trova_stipendio_medio",
+        mostra_stipendio_medio_con_errore
+    )
+
+    client = TestClient(api.app)
+
+    response = client.get(
+        "/dipendenti/stipendio_medio"
+    )
+
+    assert response.status_code == 500
+    assert response.json()["detail"] == "Errore durante il calcolo dello stipendio medio"
+
+def test_cerca_dipendente_errore_database(monkeypatch):
+    def ricerca_con_errore(*args):
+        raise sqlite3.OperationalError("Errore simulato")
+
+#  sostituisce temporaneamente la funzione reale di ricerca
+    monkeypatch.setattr(
+        "api.database.cerca_dipendente",
+        ricerca_con_errore
+    )
+
+    client = TestClient(api.app)
+
+    response = client.get(
+        "/dipendenti/cerca?nome=Mario"
+    )
+
+    assert response.status_code == 500
+    assert response.json()["detail"] == "Errore durante la ricerca del dipendente"
+
+def test_cerca_dipendente_id_errore_database(monkeypatch):
+    def ricerca_id_con_errore(*args):
+        raise sqlite3.OperationalError("Errore simulato")
+
+#  sostituisce temporaneamente la funzione reale di ricerca
+    monkeypatch.setattr(
+        "api.database.cerca_dipendente_id",
+        ricerca_id_con_errore
+    )
+
+    client = TestClient(api.app)
+
+    response = client.get(
+        "/dipendenti/1"
+    )
+
+    assert response.status_code == 500
+    assert response.json()["detail"] == "Errore durante la ricerca del dipendente"
+
+def test_modifica_dipendente_id_errore_database(monkeypatch):
+    def modifica_con_errore(*args):
+        raise sqlite3.OperationalError("Errore simulato")
+
+#  sostituisce temporaneamente la funzione reale di modifica
+    monkeypatch.setattr(
+        "api.database.cerca_dipendente_id",
+        lambda id_dipendente: (1, "Mario", 30, 2500)  # Simula un dipendente esistente
+    )
+    monkeypatch.setattr(
+        "api.database.modifica_dipendente",
+        modifica_con_errore
+    )
+
+    client = TestClient(api.app)
+
+    response = client.put(
+        "/dipendenti/1",
+        json={"nome": "Andrea", "eta": 10, "stipendio": 1900}
+    )
+
+    assert response.status_code == 500
+    assert response.json()["detail"] == "Errore durante la modifica del dipendente"
+
+def test_elimina_dipendente_id_errore_database(monkeypatch):
+    def elimina_con_errore(*args):
+        raise sqlite3.OperationalError("Errore simulato")
+
+#  sostituisce temporaneamente la funzione reale di eliminazione
+    monkeypatch.setattr(
+        "api.database.elimina_dipendente",
+        elimina_con_errore
+    )
+
+    client = TestClient(api.app)
+
+    response = client.delete(
+        "/dipendenti/1",
+    )
+
+    assert response.status_code == 500
+    assert response.json()["detail"] == "Errore durante l'eliminazione del dipendente"
+
+def test_modifica_dipendente_non_trovato_database(monkeypatch):
+    def modifica_non_trovato(*args):
+        return False
+
+#  sostituisce temporaneamente la funzione reale di modifica
+    monkeypatch.setattr(
+        "api.database.cerca_dipendente_id",
+        lambda id_dipendente: (1, "Mario", 30, 2500)  # Simula un dipendente esistente
+    )
+    monkeypatch.setattr(
+        "api.database.modifica_dipendente",
+        modifica_non_trovato
+    )
+
+    client = TestClient(api.app)
+
+    response = client.put(
+        "/dipendenti/1",
+        json={"nome": "Andrea", "eta": 10, "stipendio": 1900}
+    )
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Dipendente non trovato"
